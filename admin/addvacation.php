@@ -54,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <button type="submit" class="btn btn-primary">Save Vacation</button>
         </form>
+        <div class="mt-3">
+            <a href="adminpanel.php" class="btn btn-secondary">Back to Admin Panel</a>
+        </div>
     </div>
 </body>
 </html>
