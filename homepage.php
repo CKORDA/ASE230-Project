@@ -19,10 +19,10 @@
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">My Profile</a>
+                        <a class="nav-link" href="profile.php">My Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Vacations</a>
+                        <a class="nav-link" href="vacations.php">Vacations</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Admin Panel</a>
