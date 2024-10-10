@@ -1,3 +1,9 @@
+<?php
+// Load vacation data from the file
+$vacation_file = 'vacationdatabase.txt';
+$vacations = file($vacation_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,18 +39,29 @@
     <div class="container mt-5">
         <h2 class="text-center">Available Vacations</h2>
         <div class="row">
-            <!-- This will be dynamically populated with vacation data -->
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="vacation1.jpg" class="card-img-top" alt="Vacation Image">
-                    <div class="card-body">
-                        <h5 class="card-title">Tropical Beach Getaway</h5>
-                        <p class="card-text">Enjoy a relaxing week on the beach with all-inclusive amenities.</p>
-                        <a href="/vacation/1" class="btn btn-primary">View Details</a>
+            <?php
+            // Iterate through each vacation and display it as a card
+            foreach ($vacations as $vacation) {
+                $vacationDetails = explode('@', $vacation);
+                if (count($vacationDetails) >= 5) {
+                    list($vacationName, $vacationDescription, $vacationPrice, $vacationLocation, $vacationImage) = $vacationDetails;
+                    ?>
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <img src="<?php echo htmlspecialchars($vacationImage); ?>" class="card-img-top" alt="Vacation Image">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($vacationName); ?></h5>
+                                <p class="card-text"><?php echo htmlspecialchars($vacationDescription); ?></p>
+                                <p><strong>Location:</strong> <?php echo htmlspecialchars($vacationLocation); ?></p>
+                                <p><strong>Price:</strong> $<?php echo htmlspecialchars($vacationPrice); ?></p>
+                                <a href="vacationdetail.php?vacation=<?php echo urlencode($vacationName); ?>" class="btn btn-primary">View Details</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <!-- Add more vacation cards dynamically -->
+                    <?php
+                }
+            }
+            ?>
         </div>
     </div>
 </body>
