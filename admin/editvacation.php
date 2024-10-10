@@ -57,7 +57,7 @@ if (isset($_GET['vacation'])) {
             <button type="submit" class="btn btn-primary">Update Vacation</button>
         </form>
         <div class="mt-3">
-            <a href="../vacations.php" class="btn btn-secondary">Back to Vacations</a>
+            <a href="adminpanel.php" class="btn btn-secondary">Back to Admin Panel</a>
         </div>
     </div>
 
