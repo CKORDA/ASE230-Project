@@ -52,3 +52,4 @@ if ($foundVacation) {
     </div>
 </body>
 </html>
+

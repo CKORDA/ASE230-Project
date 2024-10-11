@@ -1,3 +1,25 @@
+<?php
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Get the form data and replace empty values with '@'
+    $vacationName = !empty($_POST['vacationName']) ? $_POST['vacationName'] : '@';
+    $vacationDescription = !empty($_POST['vacationDescription']) ? $_POST['vacationDescription'] : '@';
+    $vacationPrice = !empty($_POST['vacationPrice']) ? $_POST['vacationPrice'] : '@';
+    $vacationLocation = !empty($_POST['vacationLocation']) ? $_POST['vacationLocation'] : '@';
+    $vacationImage = !empty($_POST['vacationImage']) ? $_POST['vacationImage'] : '@';
+
+    // Format the vacation data using @ as a separator
+    $vacationData = $vacationName . '@' . $vacationDescription . '@' . $vacationPrice . '@' . $vacationLocation . '@' . $vacationImage . "\n";
+
+    // Write the data to vacationdatabase.txt
+    file_put_contents('../vacationdatabase.txt', $vacationData, FILE_APPEND | LOCK_EX);
+
+    // Redirect to vacations.php after successful saving
+    header('Location: ../vacations.php');
+    exit(); // Always call exit after header redirect to prevent further script execution
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +31,7 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center">Add a New Vacation</h2>
-        <form action="/admin/vacation" method="post">
+        <form action="addvacation.php" method="post"> <!-- Keep the action pointing to this file -->
             <div class="mb-3">
                 <label for="vacationName" class="form-label">Vacation Name</label>
                 <input type="text" class="form-control" id="vacationName" name="vacationName" required>
@@ -32,6 +54,9 @@
             </div>
             <button type="submit" class="btn btn-primary">Save Vacation</button>
         </form>
+        <div class="mt-3">
+            <a href="adminpanel.php" class="btn btn-secondary">Back to Admin Panel</a>
+        </div>
     </div>
 </body>
 </html>

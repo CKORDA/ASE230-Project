@@ -30,7 +30,7 @@ $vacations = file($vacation_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
                         <a class="nav-link" href="vacations.php">Vacations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="adminpanel.php">Admin Panel</a>
+                        <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
                     </li>
             </ul>
         </div>
@@ -63,6 +63,7 @@ $vacations = file($vacation_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
             }
             ?>
         </div>
+
     </div>
 	<!-- Add Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
