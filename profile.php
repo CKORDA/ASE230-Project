@@ -1,5 +1,17 @@
 <?php
-// Load existing user data (if any)
+session_start(); // Start the session
+
+// Check if the user is logged in
+if (!isset($_SESSION['email'])) {
+    // Redirect to login page if not logged in
+    header("Location: signin.php");
+    exit();
+}
+
+// Get the logged-in user's email from the session
+$userEmail = $_SESSION['email'];
+
+// Load vacation preferences from users.json
 $user_data_file = 'users.json';
 $users = [];
 
@@ -8,38 +20,38 @@ if (file_exists($user_data_file)) {
 }
 
 // Initialize variables for pre-filling the form
-$name = "";
-$email = "";
+$userName = "";
 $budget = "";
 $preference = "";
 
+// Check if user preferences exist in users.json
+if (isset($users[$userEmail])) {
+    $userName = $users[$userEmail]['name'];
+    $budget = $users[$userEmail]['budget'];
+    $preference = $users[$userEmail]['preference'];
+}
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['userName'];
-    $email = $_POST['userEmail'];
+    // Get the updated data from the form
+    $userName = $_POST['userName'];
     $budget = $_POST['userBudget'];
     $preference = $_POST['userPreference'];
 
-    // Update or add the user's profile
-    $users[$email] = [
-        'name' => $name,
-        'email' => $email,
+    // Update the user's vacation preferences in users.json
+    $users[$userEmail] = [
+        'name' => $userName,
+        'email' => $userEmail,  // Email is read-only (from session)
         'budget' => $budget,
         'preference' => $preference
     ];
 
-    // Save to JSON file
+    // Save the updated preferences to users.json
     file_put_contents($user_data_file, json_encode($users, JSON_PRETTY_PRINT));
 
     echo "<div class='alert alert-success text-center'>Profile updated successfully!</div>";
 }
 
-// If the user is editing an existing profile, pre-fill the form
-if (isset($users[$email])) {
-    $name = $users[$email]['name'];
-    $budget = $users[$email]['budget'];
-    $preference = $users[$email]['preference'];
-}
 ?>
 
 <!DOCTYPE html>
@@ -56,11 +68,11 @@ if (isset($users[$email])) {
         <form method="post" action="profile.php">
             <div class="mb-3">
                 <label for="userName" class="form-label">Name</label>
-                <input type="text" class="form-control" id="userName" name="userName" value="<?php echo htmlspecialchars($name); ?>" required>
+                <input type="text" class="form-control" id="userName" name="userName" value="<?php echo htmlspecialchars($userName); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="userEmail" class="form-label">Email</label>
-                <input type="email" class="form-control" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($email); ?>" required>
+                <input type="email" class="form-control" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($userEmail); ?>" readonly>
             </div>
             <div class="mb-3">
                 <label for="userBudget" class="form-label">Budget</label>
@@ -68,7 +80,7 @@ if (isset($users[$email])) {
             </div>
             <div class="mb-3">
                 <label for="userPreference" class="form-label">Vacation Preference</label>
-                <select class="form-control" id="userPreference" name="userPreference">
+                <select class="form-control" id="userPreference" name="userPreference" required>
                     <option value="beach" <?php if ($preference == 'beach') echo 'selected'; ?>>Beach</option>
                     <option value="adventure" <?php if ($preference == 'adventure') echo 'selected'; ?>>Adventure</option>
                     <option value="city" <?php if ($preference == 'city') echo 'selected'; ?>>City</option>
@@ -76,12 +88,11 @@ if (isset($users[$email])) {
             </div>
             <button type="submit" class="btn btn-primary">Update Profile</button>
         </form>
-		
-		<!-- Back to Home Button -->
+
+        <!-- Back to Home Button -->
         <div class="text-center mt-4">
             <a href="homepage.php" class="btn btn-secondary">Back to Home</a>
         </div>
-		
     </div>
 </body>
 </html>
