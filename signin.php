@@ -1,7 +1,14 @@
 <?php
+session_start(); // Start the session
 require_once('functions.php');
-if(isset($_SESSION['email'])) die('You are already sign in.');
-$showForm=true;
+
+// Check if the user is already signed in
+if (isset($_SESSION['email'])) {
+    die('You are already signed in.');
+}
+
+$showForm = true;
+
 if (count($_POST) > 0) {
     if (isset($_POST['email'][0]) && isset($_POST['password'][0])) {
         // Open the CSV file for reading
@@ -18,7 +25,6 @@ if (count($_POST) > 0) {
 
             // Ignore invalid lines
             if (strstr($line, '<?php die() ?>') || strlen($line) < 5) continue;
-          
 
             $line = explode(';', trim($line));
 
@@ -26,14 +32,14 @@ if (count($_POST) > 0) {
             if (count($line) >= 2 && $line[0] == $_POST['email'] && password_verify($_POST['password'], $line[1])) {
                 // Sign the user in
                 $_SESSION['email'] = $_POST['email'];
-               
+
+                // Redirect to homepage
                 header("Location: homepage.php");
                 exit();
 
-                $showForm=false;
+                $showForm = false;
                 $found = true; // Set flag to true if found
                 break; // Exit loop on successful login
-               
             }
         }
 
@@ -48,19 +54,17 @@ if (count($_POST) > 0) {
         echo 'Email and password are missing';
     }
 }
-if ($showForm){
+
+if ($showForm) {
 ?>
-<h1>signin</h1>
-<form method="POST">
-Email<br />
-<input type="email" name="email"
-required /><br /><br />
-Password<br />
-<input type="password" name="password" 
-required/><br /><br />
-<button type="submit">Sign in</button>
-</form>
+    <h1>Sign In</h1>
+    <form method="POST">
+        Email<br />
+        <input type="email" name="email" required /><br /><br />
+        Password<br />
+        <input type="password" name="password" required /><br /><br />
+        <button type="submit">Sign in</button>
+    </form>
 <?php
 }
 ?>
-    
