@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vacation Matcher</title>
+    <title>Admin Panel - Vacation Matcher</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -16,35 +16,33 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
+                        <a class="nav-link active" aria-current="page" href="../homepage.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.php">My Profile</a>
+                        <a class="nav-link" href="#">My Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="vacations.php">Vacations</a>
+                        <a class="nav-link" href="../vacations.php">Vacations</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
                     </li>
                 </ul>
             </div>
-            <form action="signout.php" method="post">
+            <form action="/logout" method="post">
                 <button type="submit" class="btn btn-danger">Sign Out</button>
             </form>
         </div>
     </nav>
 
     <div class="container mt-5">
-        <h1 class="text-center">Welcome to TripTinder</h1>
-
-        <p class="text-center">Find your perfect vacation based on your preferences.</p>
-        <div class="text-center">
-            <a href="vacations.php" class="btn btn-primary">Browse Vacations</a>
+        <h1 class="text-center">Admin Panel</h1>
+        <p class="text-center">Manage Vacations</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="addvacation.php" class="btn btn-success">Add Vacation</a>
+            <a href="editvacation.php" class="btn btn-warning">Edit Vacation</a>
+            <a href="deletevacation.php" class="btn btn-danger">Delete Vacation</a>
         </div>
     </div>
-    <!-- Add Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
