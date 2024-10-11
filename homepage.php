@@ -16,13 +16,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">My Profile</a>
+                        <a class="nav-link" href="profile.php">My Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Vacations</a>
+                        <a class="nav-link" href="vacations.php">Vacations</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
@@ -30,9 +30,8 @@
                 </ul>
             </div>
             <form action="/logout" method="post">
-				<button type="submit" class="btn btn-danger">Sign Out</button>
-			</form>
-
+                <button type="submit" class="btn btn-danger">Sign Out</button>
+            </form>
         </div>
     </nav>
 
@@ -44,5 +43,8 @@
         </div>
     </div>
 
+    <!-- Add Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

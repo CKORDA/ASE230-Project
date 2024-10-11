@@ -1,8 +1,9 @@
 <?php
-// Read vacation data from vacationdatabase.txt using @ as the separator
-$vacations = file('vacationdatabase.txt', FILE_IGNORE_NEW_LINES);
-
+// Load vacation data from the file
+$vacation_file = 'vacationdatabase.txt';
+$vacations = file($vacation_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,17 +21,17 @@ $vacations = file('vacationdatabase.txt', FILE_IGNORE_NEW_LINES);
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="homepage.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="vacations.php">Vacations</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">My Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
-                </li>
+                        <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.php">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="vacations.php">Vacations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
+                    </li>
             </ul>
         </div>
     </nav>
@@ -39,40 +40,33 @@ $vacations = file('vacationdatabase.txt', FILE_IGNORE_NEW_LINES);
         <h2 class="text-center">Available Vacations</h2>
         <div class="row">
             <?php
-            // Read the vacation data from the vacationdatabase.txt file
-            $vacations = file('vacationdatabase.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            
+            // Iterate through each vacation and display it as a card
             foreach ($vacations as $vacation) {
-                // Split the line into its components using @ as the separator
                 $vacationDetails = explode('@', $vacation);
-                
-                // Check if the array has enough elements
-                if (count($vacationDetails) < 5) {
-                    continue; // Skip this entry if it doesn't have enough data
-                }
-
-                // Extract vacation details
-                $vacationName = trim($vacationDetails[0]);
-                $vacationDescription = trim($vacationDetails[1]);
-                $vacationPrice = trim($vacationDetails[2]);
-                $vacationLocation = trim($vacationDetails[3]);
-                $vacationImage = trim($vacationDetails[4]);
-
-                // Display the vacation card
-            ?>
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="<?php echo htmlspecialchars($vacationImage); ?>" class="card-img-top" alt="Vacation Image">
-                        <div class="card-body">
-                            <h5 class="card-title"><?php echo htmlspecialchars($vacationName); ?></h5>
-                            <p class="card-text"><?php echo htmlspecialchars($vacationDescription); ?></p>
-                            <a href="vacationdetail.php?vacation=<?php echo urlencode($vacationName); ?>" class="btn btn-primary">View Details</a>
+                if (count($vacationDetails) >= 5) {
+                    list($vacationName, $vacationDescription, $vacationPrice, $vacationLocation, $vacationImage) = $vacationDetails;
+                    ?>
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <img src="<?php echo htmlspecialchars($vacationImage); ?>" class="card-img-top" alt="Vacation Image">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($vacationName); ?></h5>
+                                <p class="card-text"><?php echo htmlspecialchars($vacationDescription); ?></p>
+                                <p><strong>Location:</strong> <?php echo htmlspecialchars($vacationLocation); ?></p>
+                                <p><strong>Price:</strong> $<?php echo htmlspecialchars($vacationPrice); ?></p>
+                                <a href="vacationdetail.php?vacation=<?php echo urlencode($vacationName); ?>" class="btn btn-primary">View Details</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php } ?>
+                    <?php
+                }
+            }
+            ?>
         </div>
 
     </div>
+	<!-- Add Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

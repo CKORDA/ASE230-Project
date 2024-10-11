@@ -23,13 +23,12 @@ if ($foundVacation) {
 } else {
     // Set default values if vacation not found
     $vacationName = "Vacation Not Found";
-    $vacationDescription = "";
+    $vacationDescription = "The vacation you are looking for does not exist.";
     $vacationPrice = "";
     $vacationLocation = "";
     $vacationImage = "";
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
