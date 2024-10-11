@@ -29,20 +29,20 @@
                     </li>
                 </ul>
             </div>
-            <form action="/logout" method="post">
+            <form action="signout.php" method="post">
                 <button type="submit" class="btn btn-danger">Sign Out</button>
             </form>
         </div>
     </nav>
 
     <div class="container mt-5">
-        <h1 class="text-center">Welcome to Vacation Matcher!</h1>
+        <h1 class="text-center">Welcome to TripTinder</h1>
+
         <p class="text-center">Find your perfect vacation based on your preferences.</p>
         <div class="text-center">
             <a href="vacations.php" class="btn btn-primary">Browse Vacations</a>
         </div>
     </div>
-
     <!-- Add Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
