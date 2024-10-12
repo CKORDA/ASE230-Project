@@ -43,6 +43,11 @@
             <a href="editvacation.php" class="btn btn-warning">Edit Vacation</a>
             <a href="deletevacation.php" class="btn btn-danger">Delete Vacation</a>
         </div>
+
+        <p class="text-center">Manage Users</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="edituser.php" class="btn btn-primary">Edit User</a>
+        </div>
     </div>
 </body>
 </html>
