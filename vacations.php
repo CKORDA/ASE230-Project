@@ -37,17 +37,17 @@ $vacations = file($vacation_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="profile.php">My Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="vacations.php">Vacations</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
-                </li>
+                        <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.php">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="vacations.php">Vacations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
+                    </li>
             </ul>
         </div>
     </nav>

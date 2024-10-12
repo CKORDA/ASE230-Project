@@ -1,13 +1,16 @@
 <?php
 session_start();
 
+// Check if the user is logged in
 if (!isset($_SESSION['email'])) {
     header("Location: signin.php");
     exit();
 }
 
+// Get the logged-in user's email from the session
 $userEmail = $_SESSION['email'];
 
+// Load vacation preferences and existing data from users.json
 $user_data_file = 'users.json';
 $users = [];
 

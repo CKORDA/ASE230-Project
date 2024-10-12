@@ -45,7 +45,6 @@
             border-radius: 5px;
             transition: background-color 0.3s, border-color 0.3s;
         }
-
         .nav-links a:hover {
             background-color: #007BFF;
             color: white;
@@ -59,6 +58,7 @@
             display: inline-block;
             text-align: center; 
         }
+
     </style>
 </head>
 <body>

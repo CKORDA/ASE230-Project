@@ -38,7 +38,7 @@ if (count($_POST) > 0) {
                 exit();
 
                 $showForm = false;
-                $found = true; 
+                $found = true; // Set flag to true if found
                 break; // Exit loop on successful login
             }
         }
@@ -115,5 +115,6 @@ if ($showForm) {
     </body>
     </html>
     <?php
+
 }
 ?>

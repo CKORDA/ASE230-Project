@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['email'])) {
+    header("Location: signin.php");
+    exit();
+}
 // Load existing user data (if any)
 $user_data_file = 'users.json';
 $users = [];
@@ -7,25 +14,41 @@ if (file_exists($user_data_file)) {
     $users = json_decode(file_get_contents($user_data_file), true);
 }
 
+// Get logged-in user's email
+$userEmail = $_SESSION['email'];
+
 // Initialize variables for pre-filling the form
 $name = "";
-$email = "";
+$email = $userEmail;
 $budget = "";
 $preference = "";
+$bookedVacation = "";
 
-// Check if the form is submitted
+// Check if the user's profile exists
+if (isset($users[$email])) {
+    $name = $users[$email]['name'];
+    $budget = $users[$email]['budget'];
+    $preference = $users[$email]['preference'];
+    
+    // Check if a vacation is booked
+    if (isset($users[$email]['bookedVacation'])) {
+        $bookedVacation = $users[$email]['bookedVacation'];
+    }
+}
+
+// Handle form submission to update user details
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['userName'];
-    $email = $_POST['userEmail'];
     $budget = $_POST['userBudget'];
     $preference = $_POST['userPreference'];
 
-    // Update or add the user's profile
+    // Update the user's profile
     $users[$email] = [
         'name' => $name,
         'email' => $email,
         'budget' => $budget,
-        'preference' => $preference
+        'preference' => $preference,
+        'bookedVacation' => $bookedVacation // Keep the booked vacation intact
     ];
 
     // Save to JSON file
@@ -134,5 +157,6 @@ if (isset($users[$email])) {
     
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>
