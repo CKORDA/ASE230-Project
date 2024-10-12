@@ -46,10 +46,13 @@ if ($foundVacation) {
         <p><strong>Price:</strong> $<?php echo htmlspecialchars($vacationPrice); ?> per person</p>
         <p><strong>Description:</strong> <?php echo htmlspecialchars($vacationDescription); ?></p>
         <div class="text-center">
-            <a href="book.php?vacation=<?php echo urlencode($vacationName); ?>" class="btn btn-success">Book Now</a>
-            <a href="vacations.php" class="btn btn-secondary">Back to Vacations</a>
+            <form action="confirmBooking.php" method="POST">
+                <input type="hidden" name="vacationName" value="<?php echo htmlspecialchars($vacationName); ?>">
+                <button type="submit" class="btn btn-success">Book Now</button>
+            </form>
+            <a href="vacations.php" class="btn btn-secondary mt-3">Back to Vacations</a> <!-- Added mt-3 for spacing -->
         </div>
     </div>
+
 </body>
 </html>
-

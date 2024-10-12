@@ -5,3 +5,5 @@ signater1@nku.edu;$2y$10$CQ6WrvuGvSaWSIM7ToGLB.Bg8Aau137aKFbHLERlg7Zj9pJKhorG6
 signater1@nku.edu;$2y$10$JjUc2DgmUx6TxY1p9Z1DN.wAW6IpEuJWhYbnBLdxtLj.gspDv.IDy
 signater1@nku.edu;$2y$10$CmB5uBiirFtRWh5NMLAAEeNx0x4LkbEzFpu0Giuf/rX823MkuxZSO
 signater1@nku.edu;$2y$10$c5Gckt/CaCHKFpNz/8qTEOxihCLm/Wsx6KlNGZFkSWrekpZUxro5q
+monju@example.com;$2y$10$5IhCVfhkrK3HnF3NIdL.jOHLsko73JOyWXPM0V8Bc6ditjmOEwBGa
+

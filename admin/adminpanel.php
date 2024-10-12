@@ -19,13 +19,13 @@
                         <a class="nav-link active" aria-current="page" href="../homepage.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">My Profile</a>
+                        <a class="nav-link" href="../profile.php">My Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../vacations.php">Vacations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
+                        <a class="nav-link" href="../admin/adminpanel.php">Admin Panel</a>
                     </li>
                 </ul>
             </div>
@@ -43,8 +43,7 @@
             <a href="editvacation.php" class="btn btn-warning">Edit Vacation</a>
             <a href="deletevacation.php" class="btn btn-danger">Delete Vacation</a>
         </div>
-
-        <p class="text-center">Manage Users</p>
+ <p class="text-center">Manage Users</p>
         <div class="d-flex justify-content-center gap-3">
             <a href="edituser.php" class="btn btn-primary">Edit User</a>
         </div>
