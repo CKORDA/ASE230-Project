@@ -29,7 +29,7 @@
                     </li>
                 </ul>
             </div>
-            <form action="/logout" method="post">
+            <form action="../signout.php" method="post">
                 <button type="submit" class="btn btn-danger">Sign Out</button>
             </form>
         </div>
