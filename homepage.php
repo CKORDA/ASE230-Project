@@ -1,3 +1,10 @@
+<?php
+session_start(); // Start the session to access session variables
+
+// Example: Check if the user is logged in and their role
+$isLoggedIn = isset($_SESSION['email']);
+$isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,14 +54,20 @@
                     <li class="nav-item">
                         <a class="nav-link" href="vacations.php">Vacations</a>
                     </li>
+                    <!-- Only show Admin Panel if the user is an admin -->
+                    <?php if ($isAdmin): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
                     </li>
+                    <?php endif; ?>
                 </ul>
             </div>
+            <!-- Show Sign Out button only if logged in -->
+            <?php if ($isLoggedIn): ?>
             <form action="signout.php" method="post">
                 <button type="submit" class="btn btn-danger">Sign Out</button>
             </form>
+            <?php endif; ?>
         </div>
     </nav>
 
