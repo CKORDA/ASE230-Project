@@ -1,3 +1,20 @@
+<?php 
+// Start the session
+session_start();
+
+// Check if the user is logged in and has the 'admin' role
+if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
+    // If not an admin, display a message and redirect them to the homepage after a few seconds
+    echo '<div class="alert alert-danger text-center">You are not authorized to access this page. Only admins are allowed.</div>';
+    
+    // Corrected HTML output
+    echo '<div class="text-center mt-4">
+            <a href="../homepage.php" class="btn btn-secondary">Back to Home</a>
+          </div>';
+    exit(); // Ensure no further code is executed
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +46,7 @@
                     </li>
                 </ul>
             </div>
-            <form action="../signout.php" method="post">
+            <form action="signout.php" method="post">
                 <button type="submit" class="btn btn-danger">Sign Out</button>
             </form>
         </div>
@@ -43,7 +60,7 @@
             <a href="editvacation.php" class="btn btn-warning">Edit Vacation</a>
             <a href="deletevacation.php" class="btn btn-danger">Delete Vacation</a>
         </div>
- <p class="text-center">Manage Users</p>
+        <p class="text-center">Manage Users</p>
         <div class="d-flex justify-content-center gap-3">
             <a href="edituser.php" class="btn btn-primary">Edit User</a>
         </div>
