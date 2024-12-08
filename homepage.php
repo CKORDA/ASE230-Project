@@ -1,3 +1,16 @@
+<?php
+// Include database connection
+require 'db.php'; // Assuming db.php contains your PDO connection setup
+
+try {
+    // Fetch number of available vacations from the database
+    $stmt = $db->query("SELECT COUNT(*) FROM vacation");
+    $vacationCount = $stmt->fetchColumn();
+} catch (PDOException $e) {
+    die("Error fetching vacation count: " . $e->getMessage());
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,6 +76,7 @@
         <div>
             <h1>Welcome to TripTinder</h1>
             <p>Find your perfect vacation based on your preferences.</p>
+            <p>We currently have <?php echo htmlspecialchars($vacationCount); ?> amazing vacations available for you!</p>
             <a href="vacations.php" class="btn btn-primary">Browse Vacations</a>
         </div>
     </div>
