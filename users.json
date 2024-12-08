@@ -1,0 +1,71 @@
+{
+    "cheyennekorda2384@gmail.com": {
+        "name": "Cheyenne Korda",
+        "email": "cheyennekorda2384@gmail.com",
+        "budget": "1500",
+        "preference": "adventure"
+    },
+    "ncastso@gmail.com": {
+        "name": "Nathan Casto",
+        "email": "ncastso@gmail.com",
+        "budget": "2900",
+        "preference": "city"
+    },
+    "momom@example.com": {
+        "name": "Monju",
+        "email": "momom@example.com",
+        "budget": "500",
+        "preference": "beach"
+    },
+    "monju@example.com": {
+        "name": "Monju",
+        "email": "monju@example.com",
+        "budget": "10000",
+        "preference": "beach",
+        "bookedVacation": "Tropical Beach Getaway"
+    },
+    "yolo@example.com": {
+        "name": "Monju",
+        "email": "yolo@example.com",
+        "budget": "100000",
+        "preference": "beach"
+    },
+    "ee@n.com": {
+        "name": "hi",
+        "email": "ee@n.com",
+        "budget": "100000",
+        "preference": "Beach"
+    },
+    "momo@dd.com": {
+        "name": "mmm",
+        "email": "momo@dd.com",
+        "budget": "5000",
+        "preference": "Beach"
+    },
+    "ok@ok.com": {
+        "name": "ok",
+        "email": "ok@ok.com",
+        "budget": "1000",
+        "preference": "Beach"
+    },
+    "something@something.com": {
+        "name": "Monju",
+        "email": "something@something.com",
+        "budget": "100000",
+        "preference": "beach"
+    },
+    "root@root.com": {
+        "name": "root",
+        "email": "root@root.com",
+        "budget": "1111",
+        "preference": "Beach",
+        "bookedVacation": "Tropical Beach Getaway"
+    },
+    "mon@example.com": {
+        "name": "mon",
+        "email": "mon@example.com",
+        "budget": "1111",
+        "preference": "Beach",
+        "bookedVacation": "Mountain Retreat"
+    }
+}
