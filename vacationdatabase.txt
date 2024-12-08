@@ -1,3 +1,3 @@
-Tropical Beach Getaway@Enjoy a relaxing week on the pristine beaches of the Bahamas with all-inclusive amenities, excursions, and more.@1200@Bahamas@vacation1.jpg
-Mountain Retreat@Escape to the serene mountains.@900@Colorado@vacation2.jpg
-Barbados@Testing 1@100@Caribbean@https://www.visitbarbados.org/
+Tropical Beach Getaway@Enjoy a relaxing week on the pristine beaches of the Bahamas with all-inclusive amenities, excursions, and more.@1200@Bahamas@/data/pexels-yanming-guo-619377050-18562228.jpg
+Mountain Retreat@Escape to the serene mountains.@900@Colorado@/data/pexels-njeromin-28772389.jpg
+Barbados@Where turquoise waters meet golden sands. Indulge in sun-soaked beaches and vibrant island culture.@1400@Caribbean@/data/pexels-67117688-18395182.jpg
