@@ -1,5 +1,10 @@
-<?php
+<?php 
 require_once('functions.php');
+// Check if a session is already active before starting one
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 
 if (isset($_SESSION['email'])) {
     ?>
@@ -50,18 +55,25 @@ if (isset($_SESSION['email'])) {
 
 $showForm = true;
 
-if (count($_POST) > 0) {
-    if (isset($_POST['email'][0]) && isset($_POST['password'][0])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['role'])) {
         $fp = fopen(__DIR__ . '/data/users.csv.php', 'a+');
+        if ($fp === false) {
+            die('Error opening the file.');
+        }
 
-        fputs($fp, $_POST['email'] . ';' . password_hash($_POST['password'], PASSWORD_DEFAULT) . PHP_EOL);
+        $email = $_POST['email'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $role = $_POST['role'];
+
+        // Save email, hashed password, and role to the file
+        fputs($fp, "$email;$password;$role" . PHP_EOL);
         fclose($fp);
-        echo '<div class="alert alert-success text-center">Your account has been created, proceed to the <a href="signin.php">Sign in page</a>.</div>';
 
+        echo '<div class="alert alert-success text-center">Your account has been created. Proceed to the <a href="signin.php">Sign In page</a>.</div>';
         $showForm = false;
-
     } else {
-        echo '<div class="alert alert-danger text-center">Email and password are missing</div>';
+        echo '<div class="alert alert-danger text-center">All fields are required.</div>';
     }
 }
 
@@ -108,6 +120,14 @@ if ($showForm) {
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="password" name="password" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="">Select Role</option>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Sign Up</button>
                 </form>

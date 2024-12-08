@@ -1,6 +1,13 @@
 <?php
 require_once('functions.php');
 
+
+// Check if a session is already active before starting a new one
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+
 // If the user is already signed in, redirect to homepage.php
 if (isset($_SESSION['email'])) {
     header("Location: homepage.php");
@@ -17,11 +24,12 @@ if (count($_POST) > 0) {
             die('Error opening the file.');
         }
 
-        $found = false; 
+
+        $found = false;
 
         while (!feof($fp)) {
-            $line = fgets($fp); 
-            if ($line === false) continue; 
+            $line = fgets($fp);
+            if ($line === false) continue;
 
             // Ignore invalid lines
             if (strstr($line, '<?php die() ?>') || strlen($line) < 5) continue;
@@ -32,7 +40,9 @@ if (count($_POST) > 0) {
             if (count($line) >= 2 && $line[0] == $_POST['email'] && password_verify($_POST['password'], $line[1])) {
                 // Sign the user in
                 $_SESSION['email'] = $_POST['email'];
-               
+
+                $_SESSION['role'] = isset($line[2]) ? $line[2] : 'user'; // Default role if not found
+
                 // Redirect to homepage.php after login
                 header("Location: homepage.php");
                 exit();
@@ -49,7 +59,6 @@ if (count($_POST) > 0) {
         if (!$found) {
             echo '<div class="alert alert-danger text-center">Your credentials are wrong</div>';
         }
-
     } else {
         echo '<div class="alert alert-warning text-center">Email and password are missing</div>';
     }
@@ -115,6 +124,6 @@ if ($showForm) {
     </body>
     </html>
     <?php
-
 }
 ?>
+
