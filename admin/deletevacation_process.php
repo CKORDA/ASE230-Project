@@ -1,29 +1,34 @@
 <?php
-// Check if the vacation name is provided
+// Database connection
+$host = 'localhost'; // Replace with database host
+$dbname = 'triptinder'; // Replace with database name
+$username = 'root'; // Replace with database username
+$password = ''; // Replace with database password
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// Check if the vacation title is provided
 if (isset($_POST['vacation'])) {
-    $requestedVacation = $_POST['vacation'];
-    
-    // Read the vacation data from the vacationdatabase.txt file
-    $vacations = file('../vacationdatabase.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $updatedVacations = [];
+    $vacationToDelete = $_POST['vacation'];
 
-    // Filter out the vacation to be deleted
-    foreach ($vacations as $vacation) {
-        $vacationDetails = explode('@', $vacation);
-        if (trim($vacationDetails[0]) !== $requestedVacation) {
-            $updatedVacations[] = $vacation; // Keep vacations that do not match
-        }
+    try {
+        // Prepare SQL statement to delete vacation by title
+        $stmt = $pdo->prepare("DELETE FROM vacation WHERE Title = :title");
+        $stmt->execute([':title' => $vacationToDelete]);
+
+        // Redirect to vacations.php after successful deletion
+        header('Location: ../vacations.php?status=deleted');
+        exit(); // Always call exit after header redirect
+    } catch (PDOException $e) {
+        die("Failed to delete vacation: " . $e->getMessage());
     }
-
-    // Write the updated list back to the file
-    file_put_contents('../vacationdatabase.txt', implode("\n", $updatedVacations) . "\n", LOCK_EX);
-
-    // Redirect to vacations.php after deletion
-    header('Location: ../vacations.php?status=deleted');
-    exit();
 } else {
-    // If no vacation name is provided, redirect with an error
+    // If no vacation title is provided, redirect with an error
     header('Location: ../vacations.php?status=error');
     exit();
 }
-?>
