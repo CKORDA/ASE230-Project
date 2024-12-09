@@ -9,7 +9,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    throw new Exception("Database connection failed: " . $e->getMessage());
 }
 
 // Check if the vacation title is provided
@@ -25,7 +25,7 @@ if (isset($_POST['vacation'])) {
         header('Location: ../vacations.php?status=deleted');
         exit(); // Always call exit after header redirect
     } catch (PDOException $e) {
-        die("Failed to delete vacation: " . $e->getMessage());
+        throw new Exception("Failed to remove vacation: " . $e->getMessage());
     }
 } else {
     // If no vacation title is provided, redirect with an error
