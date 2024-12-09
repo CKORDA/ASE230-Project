@@ -9,7 +9,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    throw new Exception("Database connection failed: " . $e->getMessage());
 }
 
 // Handle form submission
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header('Location: ../vacations.php');
         exit(); // Always call exit after header redirect
     } catch (PDOException $e) {
-        die("Failed to save vacation: " . $e->getMessage());
+        throw new Exception("Failed to save vacation: " . $e->getMessage());
     }
 }
 ?>
