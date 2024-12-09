@@ -1,10 +1,10 @@
 <?php
 // db.php: Database connection file
 
-$host = 'localhost'; // Change if your database is hosted elsewhere
-$dbname = 'triptinder'; // Your database name
-$username = 'root'; // Your MySQL username
-$password = ''; // Your MySQL password, empty for local XAMPP setups
+$host = 'localhost'; 
+$dbname = 'triptinder'; 
+$username = 'root'; 
+$password = ''; 
 
 try {
     $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
@@ -18,8 +18,6 @@ try {
             We are currently experiencing technical issues. Please try again later.
           </div>";
 
-    // Optionally, redirect to a custom error page
-    // header("Location: error.php");
     // exit();
 }
 ?>
