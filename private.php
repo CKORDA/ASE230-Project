@@ -143,7 +143,6 @@ if (!isset($_SESSION['email'])) {
     </div>
 </body>
 </html>
-=======
 
 require_once('functions.php');
 if(!isset($_SESSION['email'])) die('This is a private page you are not 
