@@ -7,8 +7,8 @@ Regular User:
   username: hey@gmail.com 
   password: hey
 Admin User:
-  username:
-  password:
+  username:hi@g.com
+  password:hi
 
 Link to original Implementation:
   https://youtu.be/cwfas01IZKU
