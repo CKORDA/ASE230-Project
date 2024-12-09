@@ -17,7 +17,8 @@ $db_pass = '';           // Replace with your database password (if any)
 $db_name = 'triptinder'; // Replace with your actual database name
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name); // Replace with your DB credentials
 if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
+    error_log("Database connection failed: " . $conn->connect_error); // Log the error
+    $message = "We are experiencing technical issues. Please try again later.";
 }
 
 $message = "No vacation selected for booking."; // Default message
