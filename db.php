@@ -14,11 +14,10 @@ try {
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // Fetch associative arrays by default
     $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // Use native prepared statements
 
-    // Optional: Test the connection
-    // Uncomment the line below during debugging
-    // echo "Database connected successfully!";
 } catch (PDOException $e) {
     // Handle connection errors
-    die("Database connection failed: " . $e->getMessage());
+    error_log("Database connection failed: " . $e->getMessage()); // Log the error
+    echo "We are experiencing technical difficulties. Please try again later.";
+    exit();
 }
 ?>
