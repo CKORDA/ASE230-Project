@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Include our PDO connection
+include 'db.php'; // Include PDO connection
 
 session_start();
 $_POST['preferred_destination'] = 'Paris'; // Simulate form submission
