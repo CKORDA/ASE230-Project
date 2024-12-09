@@ -78,7 +78,9 @@ CREATE TABLE `users` (
   `Password` varchar(255) NOT NULL,
   `DateOfBirth` date DEFAULT NULL,
   `Preferences` enum('Adventure','City','Beach','Random') CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `Role` varchar(20) NOT NULL DEFAULT 'user'
+  `Role` varchar(20) NOT NULL DEFAULT 'user',
+  `Budget` DECIMAL(10, 2) DEFAULT NULL;
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
