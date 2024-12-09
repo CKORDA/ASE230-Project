@@ -1,23 +1,19 @@
 <?php
-// db.php: Database connection file
-
-$host = 'localhost'; 
-$dbname = 'triptinder'; 
-$username = 'root'; 
-$password = ''; 
+// Database connection settings
+$db_host = 'localhost';  // Replace with your host
+$db_name = 'triptinder'; // Replace with your database name
+$db_user = 'root';       // Replace with your database username
+$db_pass = '';           // Replace with your database password
 
 try {
-    $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    // Log the error to a file
-    error_log("Database connection failed: " . $e->getMessage(), 3, 'error_log.txt');
+     // Log the error for debugging
+    error_log("Database Error: " . $e->getMessage());
 
-    // Display a user-friendly error message
-    echo "<div style='color: red; text-align: center;'>
-            We are currently experiencing technical issues. Please try again later.
-          </div>";
-
-    // exit();
+    // Provide a user-friendly message
+    $vacations = [];
+    $error_message = "We're sorry, we're experiencing problems at this time.";
 }
 ?>
