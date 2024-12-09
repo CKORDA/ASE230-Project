@@ -1,65 +1,63 @@
 <?php
+// Include the database connection
+require 'db.php';
+
+// Ensure session is started
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION['email'])) {
-    header("Location: signin.php");
-    exit();
+// Fetch vacation details if a valid vacation is requested
+$requestedVacation = $_GET['vacation'] ?? '';
+$foundVacation = false;
+
+
+if ($requestedVacation) {
+    try {
+        // Fetch vacation details by title
+        $stmt = $pdo->prepare("SELECT * FROM vacation WHERE title = :title");
+        $stmt->execute(['title' => $requestedVacation]);
+        $foundVacation = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error fetching vacation: " . $e->getMessage());
+    }
 }
 
-// Get the logged-in user's email from the session
-$userEmail = $_SESSION['email'];
+// Booking logic
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Use session email to fetch user details
+	$userEmail = $_SESSION['email'];
+	$stmt = $pdo->prepare("SELECT userid FROM users WHERE email = :email");
+	$stmt->execute(['email' => $userEmail]);
+	$user = $stmt->fetch(PDO::FETCH_ASSOC);
+	$userId = (int)$user['userid'] ?? null;
+	
+	$vacationId = (int) $_POST['vacation_id']; // Convert to integer
+	
+    // Debug: Check if both vacationId and userId are set
+    //var_dump($vacationId, $userId);
 
-// Prepare database connection
-$db_host = 'localhost';  // Replace with database host (typically localhost)
-$db_user = 'root';       // Replace with database username
-$db_pass = '';           // Replace with database password (if any)
-$db_name = 'triptinder'; // Replace with actual database name
-$conn = new mysqli($db_host, $db_user, $db_pass, $db_name); // Replace with your DB credentials
-if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error); // Log the error
-    $message = "We are experiencing technical issues. Please try again later.";
-}
+    if ($vacationId && $userId) {
+        $bookingDate = date('Y-m-d H:i:s'); // Current date/time
+        try {
+            // Insert booking details into the database
+            $stmt = $pdo->prepare(
+                "INSERT INTO bookings (VacationID, userID, DateBooked) 
+                 VALUES (:vacation_id, :userid, :booking_date)"
+            );
+            $stmt->bindParam(':vacation_id', $vacationId, PDO::PARAM_INT);
+            $stmt->bindParam(':userid', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':booking_date', $bookingDate, PDO::PARAM_STR);
+            $stmt->execute();
 
-$message = "No vacation selected for booking."; // Default message
-
-if (isset($_POST['Title'])) {
-    $vacationTitle = $conn->real_escape_string($_POST['Title']);
-    
-    // Get the VacationID based on the selected vacation Title
-    $query = "SELECT VacationID FROM vacation WHERE Title = '$vacationTitle'";
-    $result = $conn->query($query);
-
-    if ($result->num_rows > 0) {
-        $vacation = $result->fetch_assoc();
-        $vacationID = $vacation['VacationID'];
-
-        // Get the UserID based on the user's email
-        $userQuery = "SELECT UserID FROM users WHERE Email = '$userEmail'";
-        $userResult = $conn->query($userQuery);
-        
-        if ($userResult->num_rows > 0) {
-            $user = $userResult->fetch_assoc();
-            $userID = $user['UserID'];
-
-            // Insert booking into the booking table
-            $insertBookingQuery = "INSERT INTO booking (UserID, VacationID) VALUES ('$userID', '$vacationID')";
-            if ($conn->query($insertBookingQuery) === TRUE) {
-                $message = "Congratulations! <br> Your booking is now confirmed for <br> $vacationTitle!";
-            } else {
-                $message = "Error confirming your booking. Please try again.";
-            }
-        } else {
-            $message = "User not found.";
+            $message = "Booking confirmed for vacation ID $vacationId!";
+        } catch (PDOException $e) {
+            error_log("Booking error: " . $e->getMessage());
+            $message = "Error processing booking. Please try again.";
         }
     } else {
-        $message = "The selected vacation does not exist.";
+        $message = "Vacation ID and User ID are required.";
     }
-} else {
-    $message = "No vacation selected for booking.";
 }
 
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -69,57 +67,58 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Confirmation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             background-image: url('data/samuel-clara-yUWKDfPLp6w-unsplash.jpg');
             background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
             color: #fff;
-            font-family: 'Roboto', sans-serif;
-            font-weight: bold;
-            height: 100vh;
+            font-family: Arial, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100vh;
         }
-
         .container {
-            text-align: center;
-            margin: 0;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             padding: 20px;
             border-radius: 10px;
-            max-width: 500px;
-            width: 100%;
-        }
-
-        .alert {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            font-size: 1.2rem;
-            padding: 10px 20px;
+            text-align: center;
+            width: 400px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <?php if (isset($message)) : ?>
-            <div class="alert alert-success text-center"><?php echo $message; ?></div>
-            <div class="text-center mt-4">
-                <a href="vacations.php" class="btn btn-primary">Back to Vacations</a>
-            </div>
+            <div class="alert alert-info"><?php echo htmlspecialchars($message); ?></div>
+        <?php elseif ($foundVacation) : ?>
+            <h2><?php echo htmlspecialchars($foundVacation['title']); ?></h2>
+            <p><strong>Description:</strong> <?php echo htmlspecialchars($foundVacation['description']); ?></p>
+            <p><strong>Price:</strong> $<?php echo number_format($foundVacation['price'], 2); ?></p>
+            <p><strong>Destination:</strong> <?php echo htmlspecialchars($foundVacation['destination']); ?></p>
+
+            <form method="POST">
+                <!-- Pass the vacation ID from the database -->
+                <input type="hidden" name="vacation_id" value="<?php echo $foundVacation['vacationid']; ?>">
+
+                <!-- Retrieve user ID from the session -->
+                <?php
+                // Assuming you have the user's email in the session, fetch the user ID from the database
+                $userEmail = $_SESSION['email'] ?? null;
+                if ($userEmail) {
+                    $stmt = $pdo->prepare("SELECT userid FROM users WHERE email = :email");
+                    $stmt->execute(['email' => $userEmail]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $userId = $user['userid'] ?? null;
+                }
+                ?>
+                <input type="hidden" name="user_id" value="<?php echo $userId; ?>" required>
+
+                <button class="btn btn-primary" type="submit">Book Now</button>
+            </form>
         <?php else : ?>
-            <div class="alert alert-danger text-center"><?php echo $message; ?></div>
+            <p class="alert alert-danger">Vacation not found.</p>
         <?php endif; ?>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
