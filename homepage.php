@@ -4,7 +4,7 @@ require 'db.php'; // Assuming db.php contains your PDO connection setup
 
 try {
     // Fetch number of available vacations from the database
-    $stmt = $db->query("SELECT COUNT(*) FROM vacation");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM vacation"); // Use $pdo here
     $vacationCount = $stmt->fetchColumn();
 } catch (PDOException $e) {
     // Log the error for debugging purposes
@@ -19,6 +19,7 @@ try {
     $vacationCount = 0;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
