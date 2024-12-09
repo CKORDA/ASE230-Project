@@ -1,48 +1,56 @@
 <?php
-// Load existing user data from JSON
-$user_data_file = '../users.json';
-$users = [];
+// Database connection
+$host = 'localhost'; // Replace with database host
+$dbname = 'triptinder'; // Replace with database name
+$username = 'root'; // Replace with database username
+$password = ''; // Replace with database password
 
-if (file_exists($user_data_file)) {
-    $users = json_decode(file_get_contents($user_data_file), true);
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
 
 // Initialize variables for pre-filling the form
-$name = "";
+$username = "";
 $email = "";
-$budget = "";
-$preference = "";
+$preferences = "";
 
 // If an email is selected, load the user's data (check if selectedEmail is set)
 if (isset($_POST['selectedEmail']) && $_POST['selectedEmail'] !== "") {
     $email = $_POST['selectedEmail'];
 
-    if (isset($users[$email])) {
-        $name = $users[$email]['name'];
-        $budget = $users[$email]['budget'];
-        $preference = $users[$email]['preference'];
+    // Fetch user data from the database
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE Email = :email");
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user) {
+        $username = $user['Username'];
+        $preferences = json_decode($user['Preferences'], true); // Decoding JSON data for preferences
     }
 }
 
 // Update the user information if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userName'])) {
-    $name = $_POST['userName'];
+    $username = $_POST['userName'];
     $email = $_POST['userEmail'];
-    $budget = $_POST['userBudget'];
-    $preference = $_POST['userPreference'];
+    $preferences = $_POST['userPreference']; // Handle preferences as per your needs
 
-    // Update the user's data in the array
-    $users[$email] = [
-        'name' => $name,
-        'email' => $email,
-        'budget' => $budget,
-        'preference' => $preference
-    ];
+    try {
+        // Prepare SQL statement to update user data
+        $stmt = $pdo->prepare("UPDATE users SET Username = :username, Preferences = :preferences WHERE Email = :email");
+        $stmt->execute([
+            ':username' => $username,
+            ':email' => $email,
+            ':preferences' => json_encode($preferences), // Encode preferences as JSON
+        ]);
 
-    // Save the updated users array to the JSON file
-    file_put_contents($user_data_file, json_encode($users, JSON_PRETTY_PRINT));
-
-    echo "<div class='alert alert-success text-center'>User profile updated successfully!</div>";
+        echo "<div class='alert alert-success text-center'>User profile updated successfully!</div>";
+    } catch (PDOException $e) {
+        die("Failed to update user: " . $e->getMessage());
+    }
 }
 ?>
 
@@ -64,11 +72,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userName'])) {
                 <label for="selectedEmail" class="form-label">Select User by Email</label>
                 <select class="form-control" id="selectedEmail" name="selectedEmail" onchange="this.form.submit()">
                     <option value="">-- Select an Email --</option>
-                    <?php foreach ($users as $email => $user) : ?>
-                        <option value="<?php echo htmlspecialchars($email); ?>" <?php if (isset($_POST['selectedEmail']) && $_POST['selectedEmail'] == $email) echo 'selected'; ?>>
-                            <?php echo htmlspecialchars($email); ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <?php
+                    // Fetch all users' emails from the database
+                    $stmt = $pdo->query("SELECT Email FROM users");
+                    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    // Loop through users and display them in the select dropdown
+                    foreach ($users as $user) {
+                        echo '<option value="' . htmlspecialchars($user['Email']) . '" ' . ($email == $user['Email'] ? 'selected' : '') . '>' . htmlspecialchars($user['Email']) . '</option>';
+                    }
+                    ?>
                 </select>
             </div>
         </form>
@@ -77,23 +90,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userName'])) {
         <?php if ($email) : ?>
         <form method="post" action="edituser.php">
             <div class="mb-3">
-                <label for="userName" class="form-label">Name</label>
-                <input type="text" class="form-control" id="userName" name="userName" value="<?php echo htmlspecialchars($name); ?>" required>
+                <label for="userName" class="form-label">Username</label>
+                <input type="text" class="form-control" id="userName" name="userName" value="<?php echo htmlspecialchars($username); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="userEmail" class="form-label">Email</label>
                 <input type="email" class="form-control" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($email); ?>" readonly>
             </div>
             <div class="mb-3">
-                <label for="userBudget" class="form-label">Budget</label>
-                <input type="number" class="form-control" id="userBudget" name="userBudget" value="<?php echo htmlspecialchars($budget); ?>" required>
-            </div>
-            <div class="mb-3">
                 <label for="userPreference" class="form-label">Vacation Preference</label>
                 <select class="form-control" id="userPreference" name="userPreference">
-                    <option value="beach" <?php if ($preference == 'beach') echo 'selected'; ?>>Beach</option>
-                    <option value="adventure" <?php if ($preference == 'adventure') echo 'selected'; ?>>Adventure</option>
-                    <option value="city" <?php if ($preference == 'city') echo 'selected'; ?>>City</option>
+                    <option value="beach" <?php if (isset($preferences) && in_array('beach', $preferences)) echo 'selected'; ?>>Beach</option>
+                    <option value="adventure" <?php if (isset($preferences) && in_array('adventure', $preferences)) echo 'selected'; ?>>Adventure</option>
+                    <option value="city" <?php if (isset($preferences) && in_array('city', $preferences)) echo 'selected'; ?>>City</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Update User</button>
