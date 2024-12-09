@@ -14,10 +14,12 @@ if (count($_POST) > 0) {
         // Open the CSV file for reading
         $fp = fopen(__DIR__ . '/data/users.csv.php', 'r');
         if ($fp === false) {
-            die('Error opening the file.');
+            error_log("Error opening the file: data/users.csv.php"); // Log the error
+            echo '<div class="alert alert-danger text-center">We are experiencing technical issues. Please try again later.</div>';
+            exit();
         }
 
-        $found = false; 
+        $found = false;
 
         while (!feof($fp)) {
             $line = fgets($fp); 
@@ -32,7 +34,7 @@ if (count($_POST) > 0) {
             if (count($line) >= 2 && $line[0] == $_POST['email'] && password_verify($_POST['password'], $line[1])) {
                 // Sign the user in
                 $_SESSION['email'] = $_POST['email'];
-               
+
                 // Redirect to homepage.php after login
                 header("Location: homepage.php");
                 exit();
@@ -115,6 +117,5 @@ if ($showForm) {
     </body>
     </html>
     <?php
-
 }
 ?>
