@@ -1,51 +1,78 @@
-<?php
-require_once('db.php');
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background-image: url('/data/dino-reichmuth-A5rCN8626Ck-unsplash.jpg');
+            background-image: url('data/pexels-jefriwibawa-1387037.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
             height: 100vh;
-            color: white;
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
         }
 
-        .public-card {
-            background-color: rgba(0, 0, 0, 0.7);
+        h1 {
+            color: #333;
+            font-weight: 600;
+            font-size: 2.5em; 
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .nav-links li {
+            margin: 15px 0; 
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: black;
+            font-weight: 400;
+            font-size: 1.5em; 
+            padding: 15px 25px; 
+            border: 1px solid transparent;
+            border-radius: 5px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .nav-links a:hover {
+            background-color: #007BFF;
+            color: white;
+            border-color: #007BFF;
+        }
+
+        .content-container {
+            background-color: rgba(255, 255, 255, 0.97);
             padding: 40px;
             border-radius: 10px;
-            margin-top: 100px;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
+            display: inline-block;
+            text-align: center; 
         }
 
-        .public-card a {
-            color: #1e90ff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .public-card a:hover {
-            color: #ff7f50;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="public-card">
-            <h1>Public</h1>
-            <p><a href="index.php">Go back to the login page</a></p>
-        </div>
+
+    <div class="content-container">
+        <h1>Welcome to TripTinder!</h1>
+        <ul class="nav-links">
+            <li><a href="signup.php">Sign Up</a></li>
+            <li><a href="signin.php">Sign In</a></li>
+            <li><a href="signout.php">Sign Out</a></li>
+            <li><a href="public.php">Public</a></li>
+            <li><a href="private.php">Private</a></li>
+        </ul>
     </div>
+
 </body>
 </html>
