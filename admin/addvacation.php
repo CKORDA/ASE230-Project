@@ -1,22 +1,48 @@
 <?php
+// Database connection
+$host = 'localhost'; // Replace with database host
+$dbname = 'triptinder'; // Replace with database name
+$username = 'root'; // Replace with database username
+$password = ''; // Replace with database password
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get the form data and replace empty values with '@'
-    $vacationName = !empty($_POST['vacationName']) ? $_POST['vacationName'] : '@';
-    $vacationDescription = !empty($_POST['vacationDescription']) ? $_POST['vacationDescription'] : '@';
-    $vacationPrice = !empty($_POST['vacationPrice']) ? $_POST['vacationPrice'] : '@';
-    $vacationLocation = !empty($_POST['vacationLocation']) ? $_POST['vacationLocation'] : '@';
-    $vacationImage = !empty($_POST['vacationImage']) ? $_POST['vacationImage'] : '@';
+    // Get the form data
+    $vacationTitle = $_POST['vacationName'] ?? '';
+    $vacationDescription = $_POST['vacationDescription'] ?? '';
+    $vacationPrice = $_POST['vacationPrice'] ?? 0;
+    $vacationDestination = $_POST['vacationDestination'] ?? '';
+    $vacationCategory = $_POST['vacationCategory'] ?? null; // New field for Category
+    $vacationAdminID = 1; // Assuming you have an Admin ID to assign (you can change it or get it dynamically)
 
-    // Format the vacation data using @ as a separator
-    $vacationData = $vacationName . '@' . $vacationDescription . '@' . $vacationPrice . '@' . $vacationLocation . '@' . $vacationImage . "\n";
+    try {
+        // Insert the vacation data into the database
+        $stmt = $pdo->prepare("
+            INSERT INTO vacation (title, description, price, destination, category, adminID) 
+            VALUES (:title, :description, :price, :destination, :category, :adminID)
+        ");
+        $stmt->execute([
+            ':title' => $vacationTitle,
+            ':description' => $vacationDescription,
+            ':price' => $vacationPrice,
+            ':destination' => $vacationDestination,
+            ':category' => $vacationCategory,
+            ':adminID' => $vacationAdminID
+        ]);
 
-    // Write the data to vacationdatabase.txt
-    file_put_contents('../vacationdatabase.txt', $vacationData, FILE_APPEND | LOCK_EX);
-
-    // Redirect to vacations.php after successful saving
-    header('Location: ../vacations.php');
-    exit(); // Always call exit after header redirect to prevent further script execution
+        // Redirect to vacations.php after successful saving
+        header('Location: ../vacations.php');
+        exit(); // Always call exit after header redirect
+    } catch (PDOException $e) {
+        die("Failed to save vacation: " . $e->getMessage());
+    }
 }
 ?>
 
@@ -33,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <h2 class="text-center">Add a New Vacation</h2>
         <form action="addvacation.php" method="post"> <!-- Keep the action pointing to this file -->
             <div class="mb-3">
-                <label for="vacationName" class="form-label">Vacation Name</label>
+                <label for="vacationName" class="form-label">Vacation Title</label>
                 <input type="text" class="form-control" id="vacationName" name="vacationName" required>
             </div>
             <div class="mb-3">
@@ -45,12 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="number" class="form-control" id="vacationPrice" name="vacationPrice" required>
             </div>
             <div class="mb-3">
-                <label for="vacationLocation" class="form-label">Location</label>
-                <input type="text" class="form-control" id="vacationLocation" name="vacationLocation" required>
+                <label for="vacationDestination" class="form-label">Location</label>
+                <input type="text" class="form-control" id="vacationDestination" name="vacationDestination" required>
             </div>
             <div class="mb-3">
-                <label for="vacationImage" class="form-label">Image URL</label>
-                <input type="url" class="form-control" id="vacationImage" name="vacationImage" required>
+                <label for="vacationCategory" class="form-label">Category</label>
+                <input type="text" class="form-control" id="vacationCategory" name="vacationCategory">
             </div>
             <button type="submit" class="btn btn-primary">Save Vacation</button>
         </form>
