@@ -1,67 +1,61 @@
 <?php
 session_start();
 
+// Include database connection
+require 'db.php';
+
 // Check if the user is logged in
 if (!isset($_SESSION['email'])) {
     header("Location: signin.php");
     exit();
 }
-// Load existing user data (if any)
-$user_data_file = 'users.json';
-$users = [];
 
-if (file_exists($user_data_file)) {
-    $users = json_decode(file_get_contents($user_data_file), true);
-}
+$email = $_SESSION['email']; // Logged-in user's email
 
-// Get logged-in user's email
-$userEmail = $_SESSION['email'];
-
-// Initialize variables for pre-filling the form
+// Initialize variables for the profile form
 $name = "";
-$email = $userEmail;
-$budget = "";
-$preference = "";
-$bookedVacation = "";
+$dateOfBirth = "";
+$preferences = [];
+$budget = ""; // Assuming "budget" needs to be added manually, as it's not in the database schema.
 
-// Check if the user's profile exists
-if (isset($users[$email])) {
-    $name = $users[$email]['name'];
-    $budget = $users[$email]['budget'];
-    $preference = $users[$email]['preference'];
-    
-    // Check if a vacation is booked
-    if (isset($users[$email]['bookedVacation'])) {
-        $bookedVacation = $users[$email]['bookedVacation'];
+try {
+    // Fetch user details from the database
+    $stmt = $db->prepare("SELECT Username, Email, DateOfBirth, Preferences FROM users WHERE Email = :email");
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user) {
+        $name = $user['Username'];
+        $dateOfBirth = $user['DateOfBirth'];
+        $preferences = json_decode($user['Preferences'], true) ?? [];
+    } else {
+        echo '<div class="alert alert-danger text-center">User profile not found.</div>';
+        exit();
     }
-}
 
-// Handle form submission to update user details
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['userName'];
-    $budget = $_POST['userBudget'];
-    $preference = $_POST['userPreference'];
+    // Handle form submission to update user details
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $name = $_POST['userName'];
+        $dateOfBirth = $_POST['userDob'];
+        $preferences = json_encode([
+            "destination" => $_POST['userDestination'],
+            "category" => $_POST['userCategory']
+        ]);
 
-    // Update the user's profile
-    $users[$email] = [
-        'name' => $name,
-        'email' => $email,
-        'budget' => $budget,
-        'preference' => $preference,
-        'bookedVacation' => $bookedVacation // Keep the booked vacation intact
-    ];
+        // Update user details in the database
+        $updateStmt = $db->prepare("UPDATE users SET Username = :name, DateOfBirth = :dob, Preferences = :preferences WHERE Email = :email");
+        $updateStmt->bindParam(':name', $name);
+        $updateStmt->bindParam(':dob', $dateOfBirth);
+        $updateStmt->bindParam(':preferences', $preferences);
+        $updateStmt->bindParam(':email', $email);
+        $updateStmt->execute();
 
-    // Save to JSON file
-    file_put_contents($user_data_file, json_encode($users, JSON_PRETTY_PRINT));
-
-    $success_message = "Profile updated successfully!";
-}
-
-// If the user is editing an existing profile, pre-fill the form
-if (isset($users[$email])) {
-    $name = $users[$email]['name'];
-    $budget = $users[$email]['budget'];
-    $preference = $users[$email]['preference'];
+        $success_message = "Profile updated successfully!";
+    }
+} catch (PDOException $e) {
+    echo '<div class="alert alert-danger text-center">Error: ' . htmlspecialchars($e->getMessage()) . '</div>';
+    exit();
 }
 ?>
 
