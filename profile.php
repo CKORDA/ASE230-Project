@@ -116,39 +116,45 @@ try {
             </div>
             <div class="mb-3">
                 <label for="userPreference" class="form-label">Vacation Preference</label>
-                <select class="form-control" id="userPreference" name="userPreference">
-                    <option value="Beach" <?php if ($preference == 'Beach') echo 'selected'; ?>>Beach</option>
-                    <option value="Adventure" <?php if ($preference == 'Adventure') echo 'selected'; ?>>Adventure</option>
-                    <option value="City" <?php if ($preference == 'City') echo 'selected'; ?>>City</option>
+                <select class="form-control" id="userPreference" name="userDestination">
+                    <option value="Beach" <?php if (isset($preferences['destination']) && $preferences['destination'] == 'Beach') echo 'selected'; ?>>Beach</option>
+                    <option value="Adventure" <?php if (isset($preferences['destination']) && $preferences['destination'] == 'Adventure') echo 'selected'; ?>>Adventure</option>
+                    <option value="City" <?php if (isset($preferences['destination']) && $preferences['destination'] == 'City') echo 'selected'; ?>>City</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="userCategory" class="form-label">Category</label>
+                <select class="form-control" id="userCategory" name="userCategory">
+                    <option value="Adventure" <?php if (isset($preferences['category']) && $preferences['category'] == 'Adventure') echo 'selected'; ?>>Adventure</option>
+                    <option value="Relaxation" <?php if (isset($preferences['category']) && $preferences['category'] == 'Relaxation') echo 'selected'; ?>>Relaxation</option>
+                    <option value="Cultural" <?php if (isset($preferences['category']) && $preferences['category'] == 'Cultural') echo 'selected'; ?>>Cultural</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Update Profile</button>
         </form>
-        
+
         <?php if (isset($success_message)): ?>
             <div class="alert alert-success text-center mt-4">
                 <?php echo $success_message; ?>
             </div>
         <?php endif; ?>
 
-        <?php if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($users[$email])): ?>
-            <div class="mt-5">
-                <h4 class="text-center">Updated Profile Information:</h4>
-                <ul class="list-group">
-                    <li class="list-group-item"><strong>Name:</strong> <?php echo htmlspecialchars($name); ?></li>
-                    <li class="list-group-item"><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></li>
-                    <li class="list-group-item"><strong>Budget:</strong> <?php echo htmlspecialchars($budget); ?></li>
-                    <li class="list-group-item"><strong>Vacation Preference:</strong> <?php echo htmlspecialchars($preference); ?></li>
-                </ul>
-            </div>
-        <?php endif; ?>
+        <div class="mt-5">
+            <h4 class="text-center">Updated Profile Information:</h4>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Name:</strong> <?php echo htmlspecialchars($name); ?></li>
+                <li class="list-group-item"><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></li>
+                <li class="list-group-item"><strong>Budget:</strong> <?php echo htmlspecialchars($budget); ?></li>
+                <li class="list-group-item"><strong>Vacation Preference:</strong> <?php echo htmlspecialchars($preferences['destination'] ?? 'N/A'); ?></li>
+                <li class="list-group-item"><strong>Category:</strong> <?php echo htmlspecialchars($preferences['category'] ?? 'N/A'); ?></li>
+            </ul>
+        </div>
 
         <div class="text-center mt-4">
             <a href="homepage.php" class="btn btn-secondary">Back to Home</a>
         </div>
-        
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
