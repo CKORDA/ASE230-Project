@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Include our PDO connection
+include 'db.php'; // Include PDO connection
 
 try {
     $query = $pdo->query("SELECT b.BookingID, u.Username, v.Title, b.DateBooked
