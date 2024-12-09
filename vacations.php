@@ -1,7 +1,14 @@
 <?php
-// Load vacation data from the file
-$vacation_file = 'vacationdatabase.txt';
-$vacations = file($vacation_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+// Include database connection
+require 'db.php'; // Assuming db.php contains your PDO connection setup
+
+try {
+    // Fetch vacation data from the database
+    $stmt = $db->query("SELECT Title, Description, Price, Destination, Itinerary FROM vacation");
+    $vacations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error fetching vacation data: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -14,10 +21,10 @@ $vacations = file($vacation_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
     <style>
         body {
             background-image: url('/data/manuel-cosentino-n--CMLApjfI-unsplash.jpg'); /* Path to your background image */
-            background-size: cover; /* Cover the entire background */
-            background-position: center; /* Center the background image */
-            background-repeat: no-repeat; /* Prevent repeating of the image */
-            color: white; /* Change text color to white for better contrast */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
         }
 
         .content {
@@ -37,53 +44,42 @@ $vacations = file($vacation_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="profile.php">My Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="vacations.php">Vacations</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
-                    </li>
+                    <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="profile.php">My Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="vacations.php">Vacations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
+                </li>
             </ul>
         </div>
     </nav>
 
     <div class="container mt-5">
-        <div class="content"> <!-- Added content class for background -->
+        <div class="content">
             <h2 class="text-center">Available Vacations</h2>
             <div class="row">
-                <?php
-                // Iterate through each vacation and display it as a card
-                foreach ($vacations as $vacation) {
-                    $vacationDetails = explode('@', $vacation);
-                    if (count($vacationDetails) >= 5) {
-                        list($vacationName, $vacationDescription, $vacationPrice, $vacationLocation, $vacationImage) = $vacationDetails;
-                        ?>
-                        <div class="col-md-4">
-                            <div class="card mb-3">
-                                <img src="<?php echo htmlspecialchars($vacationImage); ?>" class="card-img-top" alt="Vacation Image">
-                                <div class="card-body">
-                                    <h5 class="card-title"><?php echo htmlspecialchars($vacationName); ?></h5>
-                                    <p class="card-text"><?php echo htmlspecialchars($vacationDescription); ?></p>
-                                    <p><strong>Location:</strong> <?php echo htmlspecialchars($vacationLocation); ?></p>
-                                    <p><strong>Price:</strong> $<?php echo htmlspecialchars($vacationPrice); ?></p>
-                                    <a href="vacationdetail.php?vacation=<?php echo urlencode($vacationName); ?>" class="btn btn-primary">View Details</a>
-                                </div>
+                <?php foreach ($vacations as $vacation): ?>
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($vacation['Title']); ?></h5>
+                                <p class="card-text"><?php echo htmlspecialchars($vacation['Description']); ?></p>
+                                <p><strong>Destination:</strong> <?php echo htmlspecialchars($vacation['Destination']); ?></p>
+                                <p><strong>Price:</strong> $<?php echo htmlspecialchars(number_format($vacation['Price'], 2)); ?></p>
+                                <a href="vacationdetail.php?vacation=<?php echo urlencode($vacation['Title']); ?>" class="btn btn-primary">View Details</a>
                             </div>
                         </div>
-                        <?php
-                    }
-                }
-                ?>
+                    </div>
+                <?php endforeach; ?>
             </div>
-        </div> <!-- End of content -->
+        </div>
     </div>
 
-    <!-- Add Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>

@@ -35,6 +35,5 @@ if (isset($userRole) && $userRole === 'admin') {
 } else {
     header("Location: signin.php"); // Redirect to general sign-in page
 }
-
 exit();
 ?>

@@ -1,16 +1,19 @@
 <?php
 require_once('functions.php');
 
-
 // Check if a session is already active before starting a new one
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
 // If the user is already signed in, redirect to homepage.php
 if (isset($_SESSION['email'])) {
-    header("Location: homepage.php");
+    // Check if the user is an admin and redirect accordingly
+    if ($_SESSION['role'] == 'admin') {
+        header("Location: admin/adminpanel.php");  // Redirect to the admin panel
+    } else {
+        header("Location: homepage.php");  // Redirect to the homepage
+    }
     exit();
 }
 
@@ -23,7 +26,6 @@ if (count($_POST) > 0) {
         if ($fp === false) {
             die('Error opening the file.');
         }
-
 
         $found = false;
 
@@ -40,11 +42,14 @@ if (count($_POST) > 0) {
             if (count($line) >= 2 && $line[0] == $_POST['email'] && password_verify($_POST['password'], $line[1])) {
                 // Sign the user in
                 $_SESSION['email'] = $_POST['email'];
-
                 $_SESSION['role'] = isset($line[2]) ? $line[2] : 'user'; // Default role if not found
 
-                // Redirect to homepage.php after login
-                header("Location: homepage.php");
+                // Redirect based on role after login
+                if ($_SESSION['role'] == 'admin') {
+                    header("Location: admin/adminpanel.php");  // Redirect to admin panel if admin
+                } else {
+                    header("Location: homepage.php");  // Redirect to homepage if user
+                }
                 exit();
 
                 $showForm = false;
@@ -126,4 +131,3 @@ if ($showForm) {
     <?php
 }
 ?>
-

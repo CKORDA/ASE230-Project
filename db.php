@@ -1,18 +1,23 @@
 <?php
-// DB
+// db.php: Database connection file
 
-//Configure credentials
-$host='localhost';
-$name='triptinder';
-$user='root';
-$pass='';
+$host = 'localhost'; 
+$dbname = 'triptinder'; 
+$username = 'root'; 
+$password = ''; 
 
-//Specify options
-$opt = [
-	PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-	PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-	PDO::ATTR_EMULATE_PREPARES => false
-];
+try {
+    $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    // Log the error to a file
+    error_log("Database connection failed: " . $e->getMessage(), 3, 'error_log.txt');
 
-//Establish a connection to the db
-$db=new PDO('mysql:host='.$host.';dbname='.$name.';charset=utf8mb4',$user,$pass,$opt);
+    // Display a user-friendly error message
+    echo "<div style='color: red; text-align: center;'>
+            We are currently experiencing technical issues. Please try again later.
+          </div>";
+
+    // exit();
+}
+?>
