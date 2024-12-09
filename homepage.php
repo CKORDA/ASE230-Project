@@ -75,9 +75,10 @@ try {
                     </li>
                 </ul>
             </div>
-            <form action="signout.php" method="post">
-                <button type="submit" class="btn btn-danger">Sign Out</button>
-            </form>
+            <form action="<?php echo htmlspecialchars(dirname($_SERVER['PHP_SELF']) . '/signout.php'); ?>" method="post">
+				<button type="submit" class="btn btn-danger">Sign Out</button>
+			</form>
+
         </div>
     </nav>
 
