@@ -1,13 +1,13 @@
 <?php
-// Include database connection
-require 'db.php'; // Assuming db.php contains your PDO connection setup
+// Include the database connection
+include 'db.php';
 
 try {
-    // Fetch vacation data from the database
-    $stmt = $db->query("SELECT Title, Description, Price, Destination, Itinerary FROM vacation");
-    $vacations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Fetch all vacations from the database
+    $query = $pdo->query("SELECT Title, Description, Price, Destination, Itinerary FROM vacation");
+    $vacations = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    die("Error fetching vacation data: " . $e->getMessage());
+    die("Error fetching vacations: " . $e->getMessage());
 }
 ?>
 
@@ -20,7 +20,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-image: url('/data/manuel-cosentino-n--CMLApjfI-unsplash.jpg'); /* Path to your background image */
+            background-image: url('/data/manuel-cosentino-n--CMLApjfI-unsplash.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -37,25 +37,30 @@ try {
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Vacation Matcher</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="profile.php">My Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="vacations.php">Vacations</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
-                </li>
-            </ul>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Vacation Matcher</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.php">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="vacations.php">Vacations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin/adminpanel.php">Admin Panel</a>
+                    </li>
+                </ul>
+            </div>
+            <form action="../signout.php" method="post">
+                <button type="submit" class="btn btn-danger">Sign Out</button>
+            </form>
         </div>
     </nav>
 
@@ -63,19 +68,24 @@ try {
         <div class="content">
             <h2 class="text-center">Available Vacations</h2>
             <div class="row">
-                <?php foreach ($vacations as $vacation): ?>
+                <?php
+                // Iterate through each vacation and display it as a card
+                foreach ($vacations as $vacation) {
+                    ?>
                     <div class="col-md-4">
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo htmlspecialchars($vacation['Title']); ?></h5>
                                 <p class="card-text"><?php echo htmlspecialchars($vacation['Description']); ?></p>
-                                <p><strong>Destination:</strong> <?php echo htmlspecialchars($vacation['Destination']); ?></p>
+                                <p><strong>Location:</strong> <?php echo htmlspecialchars($vacation['Destination']); ?></p>
                                 <p><strong>Price:</strong> $<?php echo htmlspecialchars(number_format($vacation['Price'], 2)); ?></p>
                                 <a href="vacationdetail.php?vacation=<?php echo urlencode($vacation['Title']); ?>" class="btn btn-primary">View Details</a>
                             </div>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </div>
