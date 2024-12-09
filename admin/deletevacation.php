@@ -1,6 +1,20 @@
 <?php
-// Read the vacation data from the vacationdatabase.txt file
-$vacations = file('../vacationdatabase.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+// Database connection
+$host = 'localhost'; // Replace with database host
+$dbname = 'triptinder'; // Replace with database name
+$username = 'root'; // Replace with database username
+$password = ''; // Replace with database password
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// Fetch vacations from the database
+$stmt = $pdo->query("SELECT Title FROM vacation");
+$vacations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -25,9 +39,9 @@ $vacations = file('../vacationdatabase.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_E
                 <select class="form-select" id="vacation" name="vacation" required>
                     <option value="">-- Choose a Vacation --</option>
                     <?php
+                    // Loop through vacations and display them in the select dropdown
                     foreach ($vacations as $vacation) {
-                        $vacationDetails = explode('@', $vacation);
-                        echo '<option value="' . htmlspecialchars(trim($vacationDetails[0])) . '">' . htmlspecialchars(trim($vacationDetails[0])) . '</option>';
+                        echo '<option value="' . htmlspecialchars($vacation['Title']) . '">' . htmlspecialchars($vacation['Title']) . '</option>';
                     }
                     ?>
                 </select>
