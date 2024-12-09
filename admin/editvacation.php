@@ -1,11 +1,29 @@
 <?php
-// Read the vacation data from the vacationdatabase.txt file
-$vacations = file('../vacationdatabase.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+// Database connection
+$host = 'localhost'; // Replace with database host
+$dbname = 'triptinder'; // Replace with database name
+$username = 'root'; // Replace with database username
+$password = ''; // Replace with database password
 
-// Check if the vacation is being edited
-$vacationToEdit = '';
-if (isset($_GET['vacation'])) {
-    $vacationToEdit = $_GET['vacation'];
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// Fetch vacations for the select dropdown
+$stmt = $pdo->query("SELECT VacationID, Title FROM vacation");
+$vacations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch selected vacation details if available
+$vacationDetails = [];
+if (isset($_GET['vacationID'])) {
+    $vacationID = $_GET['vacationID'];
+    
+    $stmt = $pdo->prepare("SELECT * FROM vacation WHERE VacationID = :vacationID");
+    $stmt->execute([':vacationID' => $vacationID]);
+    $vacationDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -28,31 +46,30 @@ if (isset($_GET['vacation'])) {
                     <option value="">-- Choose a Vacation --</option>
                     <?php
                     foreach ($vacations as $vacation) {
-                        $vacationDetails = explode('@', $vacation);
-                        echo '<option value="' . htmlspecialchars(trim($vacationDetails[0])) . '"' . ($vacationToEdit === trim($vacationDetails[0]) ? ' selected' : '') . '>' . htmlspecialchars(trim($vacationDetails[0])) . '</option>';
+                        echo '<option value="' . $vacation['VacationID'] . '"' . (isset($vacationID) && $vacationID == $vacation['VacationID'] ? ' selected' : '') . '>' . htmlspecialchars($vacation['Title']) . '</option>';
                     }
                     ?>
                 </select>
             </div>
 
-            <div id="vacationDetails" style="display: none;">
+            <?php if (!empty($vacationDetails)): ?>
+            <div id="vacationDetails">
+                <input type="hidden" name="vacationID" value="<?php echo $vacationDetails['VacationID']; ?>">
+
                 <div class="mb-3">
                     <label for="vacationDescription" class="form-label">Description</label>
-                    <textarea class="form-control" id="vacationDescription" name="vacationDescription" rows="3" required></textarea>
+                    <textarea class="form-control" id="vacationDescription" name="vacationDescription" rows="3" required><?php echo htmlspecialchars($vacationDetails['Description']); ?></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="vacationPrice" class="form-label">Price</label>
-                    <input type="number" class="form-control" id="vacationPrice" name="vacationPrice" required>
+                    <input type="number" class="form-control" id="vacationPrice" name="vacationPrice" value="<?php echo htmlspecialchars($vacationDetails['Price']); ?>" required>
                 </div>
                 <div class="mb-3">
-                    <label for="vacationLocation" class="form-label">Location</label>
-                    <input type="text" class="form-control" id="vacationLocation" name="vacationLocation" required>
-                </div>
-                <div class="mb-3">
-                    <label for="vacationImage" class="form-label">Image URL</label>
-                    <input type="url" class="form-control" id="vacationImage" name="vacationImage" required>
+                    <label for="vacationDestination" class="form-label">Destination</label>
+                    <input type="text" class="form-control" id="vacationDestination" name="vacationDestination" value="<?php echo htmlspecialchars($vacationDetails['Destination']); ?>" required>
                 </div>
             </div>
+            <?php endif; ?>
 
             <button type="submit" class="btn btn-primary">Update Vacation</button>
         </form>
@@ -62,21 +79,8 @@ if (isset($_GET['vacation'])) {
     </div>
 
     <script>
-        function loadVacationDetails(vacationName) {
-            const vacationData = <?php echo json_encode($vacations); ?>;
-            const detailsDiv = document.getElementById('vacationDetails');
-            detailsDiv.style.display = vacationName ? 'block' : 'none';
-
-            if (vacationName) {
-                const vacationInfo = vacationData.find(vacation => vacation.startsWith(vacationName));
-                if (vacationInfo) {
-                    const details = vacationInfo.split('@');
-                    document.getElementById('vacationDescription').value = details[1].trim();
-                    document.getElementById('vacationPrice').value = details[2].trim();
-                    document.getElementById('vacationLocation').value = details[3].trim();
-                    document.getElementById('vacationImage').value = details[4].trim();
-                }
-            }
+        function loadVacationDetails(vacationID) {
+            window.location.href = `editvacation.php?vacationID=${vacationID}`;
         }
     </script>
 </body>
