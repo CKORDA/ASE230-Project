@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Include our PDO connection
+include 'db.php'; // Include PDO connection
 
 try {
     $email = 'newuser@example.com';
