@@ -1,15 +1,18 @@
 <?php
 // Database connection
-$host = 'localhost'; // Replace with your database host
-$dbname = 'triptinder'; // Replace with your database name
-$username = 'root'; // Replace with your database username
-$password = ''; // Replace with your database password
+$host = 'localhost'; // Replace with database host
+$dbname = 'triptinder'; // Replace with database name
+$username = 'root'; // Replace with  database username
+$password = ''; // Replace with database password
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    // Log the error and provide a user-friendly message
+    error_log("Database connection failed: " . $e->getMessage()); // Log the error
+    echo '<div class="alert alert-danger text-center">We are experiencing technical issues. Please try again later.</div>';
+    exit(); // Stop script execution after error
 }
 
 // Get the vacation title from the query string
