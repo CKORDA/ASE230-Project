@@ -1,32 +1,31 @@
 <?php
-// Get the vacation name from the query string
+// Database connection
+include 'db.php';
+
+// Get the vacation title from the query string
 $requestedVacation = $_GET['vacation'] ?? '';
 
-// Read the vacation data from the vacationdatabase.txt file
-$vacations = file('vacationdatabase.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-$foundVacation = null;
-
-foreach ($vacations as $vacation) {
-    $vacationDetails = explode('@', $vacation);
-    if (count($vacationDetails) >= 5) {
-        // Check for a match with the requested vacation name
-        if (trim($vacationDetails[0]) === $requestedVacation) {
-            $foundVacation = $vacationDetails;
-            break; // Found the vacation, no need to continue looping
-        }
-    }
+if ($requestedVacation) {
+    // Fetch vacation details from the database using title
+    $stmt = $pdo->prepare("SELECT title, description, price, destination FROM vacation WHERE title = :title");
+    $stmt->execute(['title' => $requestedVacation]);
+    $foundVacation = $stmt->fetch(PDO::FETCH_ASSOC);
+} else {
+    $foundVacation = false;
 }
 
 // Check if the vacation was found
 if ($foundVacation) {
-    list($vacationName, $vacationDescription, $vacationPrice, $vacationLocation, $vacationImage) = $foundVacation;
+    $vacationTitle = $foundVacation['title'];
+    $vacationDescription = $foundVacation['description'];
+    $vacationPrice = $foundVacation['price'];
+    $vacationDestination = $foundVacation['destination'];
 } else {
     // Set default values if vacation not found
-    $vacationName = "Vacation Not Found";
+    $vacationTitle = "Vacation Not Found";
     $vacationDescription = "The vacation you are looking for does not exist.";
     $vacationPrice = "";
-    $vacationLocation = "";
-    $vacationImage = "";
+    $vacationDestination = "";
 }
 ?>
 
@@ -40,19 +39,17 @@ if ($foundVacation) {
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center"><?php echo htmlspecialchars($vacationName); ?></h2>
-        <img src="<?php echo htmlspecialchars($vacationImage); ?>" class="img-fluid mb-3" alt="Vacation Image">
-        <p><strong>Location:</strong> <?php echo htmlspecialchars($vacationLocation); ?></p>
+        <h2 class="text-center"><?php echo htmlspecialchars($vacationTitle); ?></h2>
+        <p><strong>Location:</strong> <?php echo htmlspecialchars($vacationDestination); ?></p>
         <p><strong>Price:</strong> $<?php echo htmlspecialchars($vacationPrice); ?> per person</p>
         <p><strong>Description:</strong> <?php echo htmlspecialchars($vacationDescription); ?></p>
         <div class="text-center">
             <form action="confirmBooking.php" method="POST">
-                <input type="hidden" name="vacationName" value="<?php echo htmlspecialchars($vacationName); ?>">
+                <input type="hidden" name="vacationTitle" value="<?php echo htmlspecialchars($vacationTitle); ?>">
                 <button type="submit" class="btn btn-success">Book Now</button>
             </form>
             <a href="vacations.php" class="btn btn-secondary mt-3">Back to Vacations</a> <!-- Added mt-3 for spacing -->
         </div>
     </div>
-
 </body>
 </html>
