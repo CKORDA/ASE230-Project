@@ -112,7 +112,7 @@ $conn->close();
         <?php if (isset($message)) : ?>
             <div class="alert alert-success text-center"><?php echo $message; ?></div>
             <div class="text-center mt-4">
-                <a href="profile.php" class="btn btn-primary">Back to Profile</a>
+                <a href="vacations.php" class="btn btn-primary">Back to Vacations</a>
             </div>
         <?php else : ?>
             <div class="alert alert-danger text-center"><?php echo $message; ?></div>
