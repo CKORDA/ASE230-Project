@@ -31,12 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['email'] = $user['Email'];   // Store email in session
         $_SESSION['role'] = $user['Role'];     // Store role in session
 
-        // Redirect to the homepage or admin panel based on the role
-        if ($user['Role'] === 'admin') {
-            header("Location: /admin/adminpanel.php"); // Redirect to admin panel if role is admin
-        } else {
-            header("Location: homepage.php");   // Redirect to homepage if role is user
-        }
+        // Redirect
+        header("Location: homepage.php");   // Redirect to homepage if role is user
+        
         exit();
     } else {
         // If credentials are invalid, show an error
