@@ -3,11 +3,26 @@
 include 'db.php';
 
 try {
-    // Fetch all vacations from the database
+    // Database connection
+    $db_host = 'localhost';
+    $db_name = 'triptinder';
+    $db_user = 'root';
+    $db_pass = '';
+
+    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Query to fetch vacations
     $query = $pdo->query("SELECT Title, Description, Price, Destination, Itinerary FROM vacation");
     $vacations = $query->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
-    die("Error fetching vacations: " . $e->getMessage());
+   // Log the error for debugging
+    error_log("Database Error: " . $e->getMessage());
+
+    // Provide a user-friendly message
+    $vacations = [];
+    $error_message = "We're sorry, but we couldn't fetch the vacation data at this time.";
 }
 ?>
 
