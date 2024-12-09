@@ -10,5 +10,8 @@ Admin User:
   username:
   password:
 
-Link to Youtube Video:
+Link to original Implementation:
+  https://youtu.be/cwfas01IZKU
+
+Link to Overall Content:
   https://youtu.be/pvo6DNt4Nek
