@@ -10,29 +10,56 @@ if (!isset($_SESSION['email'])) {
 // Get the logged-in user's email from the session
 $userEmail = $_SESSION['email'];
 
-// Load vacation preferences and existing data from users.json
-$user_data_file = 'users.json';
-$users = [];
-
-if (file_exists($user_data_file)) {
-    $users = json_decode(file_get_contents($user_data_file), true);
+// Prepare database connection
+$db_host = 'localhost';  // Replace with database host (typically localhost)
+$db_user = 'root';       // Replace with database username
+$db_pass = '';           // Replace with database password (if any)
+$db_name = 'triptinder'; // Replace with actual database name
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name); // Replace with your DB credentials
+if ($conn->connect_error) {
+    error_log("Database connection failed: " . $conn->connect_error); // Log the error
+    $message = "We are experiencing technical issues. Please try again later.";
 }
 
-if (isset($_POST['vacationName'])) {
-    $vacationName = htmlspecialchars($_POST['vacationName']);
-    
-    if (isset($users[$userEmail])) {
-        $users[$userEmail]['bookedVacation'] = $vacationName;
+$message = "No vacation selected for booking."; // Default message
 
-        file_put_contents($user_data_file, json_encode($users, JSON_PRETTY_PRINT));
+if (isset($_POST['Title'])) {
+    $vacationTitle = $conn->real_escape_string($_POST['Title']);
+    
+    // Get the VacationID based on the selected vacation Title
+    $query = "SELECT VacationID FROM vacation WHERE Title = '$vacationTitle'";
+    $result = $conn->query($query);
+
+    if ($result->num_rows > 0) {
+        $vacation = $result->fetch_assoc();
+        $vacationID = $vacation['VacationID'];
+
+        // Get the UserID based on the user's email
+        $userQuery = "SELECT UserID FROM users WHERE Email = '$userEmail'";
+        $userResult = $conn->query($userQuery);
         
-        $message = "Congratulations! <br> Your booking is now confirmed for <br> $vacationName!";
+        if ($userResult->num_rows > 0) {
+            $user = $userResult->fetch_assoc();
+            $userID = $user['UserID'];
+
+            // Insert booking into the booking table
+            $insertBookingQuery = "INSERT INTO booking (UserID, VacationID) VALUES ('$userID', '$vacationID')";
+            if ($conn->query($insertBookingQuery) === TRUE) {
+                $message = "Congratulations! <br> Your booking is now confirmed for <br> $vacationTitle!";
+            } else {
+                $message = "Error confirming your booking. Please try again.";
+            }
+        } else {
+            $message = "User not found.";
+        }
     } else {
-        $message = "User profile not found. Unable to confirm booking.";
+        $message = "The selected vacation does not exist.";
     }
 } else {
     $message = "No vacation selected for booking.";
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
