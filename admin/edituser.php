@@ -9,7 +9,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    throw new Exception("Database connection failed: " . $e->getMessage());
 }
 
 // Initialize variables for pre-filling the form
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userName'])) {
 
         echo "<div class='alert alert-success text-center'>User profile updated successfully!</div>";
     } catch (PDOException $e) {
-        die("Failed to update user: " . $e->getMessage());
+        throw new Exception("Failed to edit user: " . $e->getMessage());
     }
 }
 ?>
