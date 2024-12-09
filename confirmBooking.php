@@ -11,10 +11,10 @@ if (!isset($_SESSION['email'])) {
 $userEmail = $_SESSION['email'];
 
 // Prepare database connection
-$db_host = 'localhost';  // Replace with your database host (typically localhost)
-$db_user = 'root';       // Replace with your database username
-$db_pass = '';           // Replace with your database password (if any)
-$db_name = 'triptinder'; // Replace with your actual database name
+$db_host = 'localhost';  // Replace with database host (typically localhost)
+$db_user = 'root';       // Replace with database username
+$db_pass = '';           // Replace with database password (if any)
+$db_name = 'triptinder'; // Replace with actual database name
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name); // Replace with your DB credentials
 if ($conn->connect_error) {
     error_log("Database connection failed: " . $conn->connect_error); // Log the error
