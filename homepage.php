@@ -7,7 +7,16 @@ try {
     $stmt = $db->query("SELECT COUNT(*) FROM vacation");
     $vacationCount = $stmt->fetchColumn();
 } catch (PDOException $e) {
-    die("Error fetching vacation count: " . $e->getMessage());
+    // Log the error for debugging purposes
+    error_log("Error fetching vacation count: " . $e->getMessage(), 3, 'error_log.txt');
+
+    // Display a user-friendly error message
+    echo "<div style='color: red; text-align: center;'>
+            Unable to fetch vacation data. Please try again later.
+          </div>";
+
+    // Set a default value to avoid further script issues
+    $vacationCount = 0;
 }
 ?>
 
