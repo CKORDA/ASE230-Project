@@ -7,7 +7,10 @@ try {
     $query = $pdo->query("SELECT Title, Description, Price, Destination, Itinerary FROM vacation");
     $vacations = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    die("Error fetching vacations: " . $e->getMessage());
+    // Log the error and provide a user-friendly message
+    error_log("Error fetching vacations: " . $e->getMessage()); // Log the error
+    echo '<div class="alert alert-danger text-center">We are experiencing technical issues. Please try again later.</div>';
+    exit(); // Stop script execution after error
 }
 ?>
 
