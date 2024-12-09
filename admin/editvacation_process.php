@@ -1,28 +1,38 @@
 <?php
-// Read the vacation data
-$vacations = file('../vacationdatabase.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+// Database connection
+$host = 'localhost'; // Replace with database host
+$dbname = 'triptinder'; // Replace with database name
+$username = 'root'; // Replace with database username
+$password = ''; // Replace with database password
 
-// Prepare to update the vacation
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// Handle form submission to update vacation
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $selectedVacation = $_POST['vacation'];
+    $vacationID = $_POST['vacationID'];
     $vacationDescription = $_POST['vacationDescription'];
     $vacationPrice = $_POST['vacationPrice'];
-    $vacationLocation = $_POST['vacationLocation'];
-    $vacationImage = $_POST['vacationImage'];
+    $vacationDestination = $_POST['vacationDestination'];
 
-    // Create the new vacation string
-    $updatedVacation = $selectedVacation . '@' . $vacationDescription . '@' . $vacationPrice . '@' . $vacationLocation . '@' . $vacationImage;
-
-    // Update the vacation data
-    foreach ($vacations as $index => $vacation) {
-        if (strpos($vacation, $selectedVacation) === 0) {
-            $vacations[$index] = $updatedVacation; // Replace old vacation data
-            break;
-        }
-    }
-
-    // Write the updated data back to the file
-    file_put_contents('../vacationdatabase.txt', implode("\n", $vacations) . "\n");
+    // Prepare SQL statement to update vacation
+    $stmt = $pdo->prepare("
+        UPDATE vacation 
+        SET Description = :description, Price = :price, Destination = :destination 
+        WHERE VacationID = :vacationID
+    ");
+    
+    // Execute the query with bound parameters
+    $stmt->execute([
+        ':description' => $vacationDescription,
+        ':price' => $vacationPrice,
+        ':destination' => $vacationDestination,
+        ':vacationID' => $vacationID
+    ]);
 
     // Redirect to vacations.php after successful update
     header('Location: ../vacations.php');
