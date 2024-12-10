@@ -18,3 +18,6 @@ Link to Overall Content:
 
 Link to Admin Operations and Changes:
   https://youtu.be/v-m27e8N9bk
+  
+Additional information on the admin panel: 
+https://youtu.be/wXTpewsRa9g
